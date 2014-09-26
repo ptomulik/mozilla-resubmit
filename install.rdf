@@ -9,7 +9,7 @@
     <em:creator>Paweł Tomulik</em:creator>
     <em:contributor></em:contributor>
     <em:description>
-      Re-submit messages forwarded by users (as attachments) to a central mailbox.
+      Re-submit messages received from users to a predefined recipient(s).
     </em:description>
     <!-- <em:aboutURL>chrome://resubmit/content/about.xul</em:aboutURL> -->
     <em:optionsURL>chrome://resubmit/content/options.xul</em:optionsURL> 
