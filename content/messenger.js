@@ -32,8 +32,8 @@ function Resubmit() {
         Compose:    2
     };
 
-    Cu.import("resource:///modules/gloda/mimemsg.js", MimeMsg);
-    Cu.import("resource:///modules/MailUtils.js");
+    Cu.import("resource://app/modules/gloda/mimemsg.js", MimeMsg);
+    Cu.import("resource://app/modules/MailUtils.js");
 
     (function readPrefs() {
 
@@ -405,8 +405,9 @@ function Resubmit() {
                 this.windowsOpened += 1;
                 window.openDialog(url, "_blank", "", aParams, function () { me.onMsgComposed(); });
             } else {
-                fun = function () { me.openComposeWindow(aService, aWindowURL, aParams); };
-                window.setTimeout(fun, 500);
+                window.setTimeout(function () {
+                    me.openComposeWindow(aService, aWindowURL, aParams);
+                }, 500);
             }
         },
         apply: function (aTplHdr, aTplMsg, aAttachment) {
