@@ -4,7 +4,7 @@ Resubmit
 Simple Thunderbird add-on for every-day re-submission of messages received from
 multiple senders.
 
-Overwiev
+Overview
 --------
 
 This tool is designated for network/mail administrators. Having a bunch of
