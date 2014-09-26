@@ -1,4 +1,10 @@
 /*jslint browser: true, unparam: true */
+/*global Components */
+/*global log */
+/*global getIdentityForServer */
+/*global MailUtils */
+/*global CheckForMessageIdInFolder */
+
 function Resubmit() {
     "use strict";
 
@@ -9,16 +15,13 @@ function Resubmit() {
         prefs = Cc["@mozilla.org/preferences-service;1"]
             .getService(Ci.nsIPrefService)
             .getBranch("extensions.resubmit."),
-        debugEnabled = true,    // extensions.resubmit.debug.enabled (initially enabled)
-        debugLevel = 7,         // extensions.resubmit.debug.level
         composeEnabled,         // extensions.resubmit.compose.enabled
         composeMaxWindows,      // extensions.resubmit.compose.max_windows
         sendNowEnabled,         // extensions.resubmit.sendnow.enabled
         sendNowMaxMessages,     // extensions.resubmit.sendnow.max_messages
         sendLaterEnabled,       // extensions.resubmit.sendnow.enabled
         sendLaterMaxMessages,   // extensions.resubmit.sendnow.max_messages
-        MimeMsg = {},
-        logId = 0;
+        MimeMsg = {};
 
     self.initialized = false;
     self.name = Resubmit;
@@ -109,16 +112,16 @@ function Resubmit() {
                 + ", " + aMaxSelfProgress + ", "  + aCurTotalProgress + ", "
                 + aMaxTotalProgress + ")", 5);
             log("debug: ProgressListener.onProgress(): aMaxTotalProgress == " + aMaxTotalProgress, 7);
-            if (aMaxTotalProgress == -1) {
-                log("debug: ProgressListener.onProgress(): if(aMaxTotalProgress == -1) { ...", 6);
-                this.batchWin.setProgress( 100 );
+            if (aMaxTotalProgress === -1) {
+                log("debug: ProgressListener.onProgress(): if (aMaxTotalProgress == -1) { ...", 6);
+                this.batchWin.setProgress(100);
                 log("debug: ProgressListener.onProgress(): invoking this.notifyComplete()", 6);
                 this.notifyComplete();
                 log("debug: ProgressListener.onProgress(): returned from this.notifyComplete()", 7);
             } else {
-                log("debug: ProgressListener.onProgress(): if(aMaxTotalProgress == -1) { ... } else { ... ", 6);
+                log("debug: ProgressListener.onProgress(): if (aMaxTotalProgress == -1) { ... } else { ... ", 6);
                 if (aMaxSelfProgress > 0) {
-                    this.batchWin.setProgress( (100 * aCurSelfProgress)/aMaxSelfProgress );
+                    this.batchWin.setProgress((100 * aCurSelfProgress) / aMaxSelfProgress);
                 }
             }
         },
@@ -127,7 +130,7 @@ function Resubmit() {
                 + aWebProgress + ", " + aRequest + ", "  + aLocation + ")", 5);
         },
         onStatusChange: function (aWebProgress, aRequest, aStatus, aMessage) {
-            log("debug: ProgressListener.onStatusChange(): called with (" 
+            log("debug: ProgressListener.onStatusChange(): called with ("
                 + aWebProgress + ", " + aRequest + ", "  + aStatus + ", "
                 + aMessage + ")", 5);
             this.batchWin.setStatus(aMessage);
@@ -335,31 +338,26 @@ function Resubmit() {
         sendMsg: function (aMsgCompose, aDeliverMode, aIdentity, aAccount, aWindow, aProgress) {
             // Prevent multiple simultaneous calls to aMsgCompose.SendMsg().
             var me = this;
-            log("debug: Submitter.sendMsg(): called with (" + aMsgCompose 
+            log("debug: Submitter.sendMsg(): called with (" + aMsgCompose
                  + ", " + aDeliverMode + ", " + aIdentity + ", " + aAccount
                  + ", " + aWindow + ", " + aProgress + ")", 5);
             log("debug: Submitter.sendMsg(): this.sendMsgsInProgress == " + this.sendMsgsInProgress, 7);
-            if(this.sendMsgsInProgress < 1) {
+            if (this.sendMsgsInProgress < 1) {
                 this.sendMsgsInProgress += 1;
                 log("debug: Submitter.sendMsg(): invoking aMsgCompose.SendMsg()", 6);
                 aMsgCompose.SendMsg(aDeliverMode, aIdentity, aAccount, aWindow, aProgress);
                 log("debug: Submitter.sendMsg(): returned from aMsgCompose.SendMsg()", 7);
             } else {
-                log("debug: Submitter.sendMsg(): invoking setTimeout( { me.sendMsg(...); })", 6);
-                setTimeout(function () {
+                log("debug: Submitter.sendMsg(): invoking window.setTimeout( { me.sendMsg(...); })", 6);
+                window.setTimeout(function () {
                     me.sendMsg(aMsgCompose, aDeliverMode, aIdentity, aAccount, aWindow, aProgress);
                 }, 50);
-                log("debug: Submitter.sendMsg(): returned from setTimeout( { me.sendMsg(...); })", 7);
+                log("debug: Submitter.sendMsg(): returned from window.setTimeout( { me.sendMsg(...); })", 7);
             }
         },
-        callback: function (aTplHdr, aTplMsg, aAttachment) {
-            var me = this,
-                msgComposeSvc = Cc["@mozilla.org/messengercompose;1"]
-                    .getService(Ci.nsIMsgComposeService),
-                msgCompose = Cc["@mozilla.org/messengercompose/compose;1"]
+        apply: function (aTplHdr, aTplMsg, aAttachment) {
+            var msgCompose = Cc["@mozilla.org/messengercompose/compose;1"]
                     .createInstance(Ci.nsIMsgCompose),
-                msgSend = Cc["@mozilla.org/messengercompose/send;1"]
-                    .createInstance(Ci.nsIMsgSend),
                 msgComposeParams = Cc["@mozilla.org/messengercompose/composeparams;1"]
                     .createInstance(Ci.nsIMsgComposeParams),
                 progress = Cc["@mozilla.org/messenger/progress;1"]
@@ -374,7 +372,7 @@ function Resubmit() {
         }
     };
 
-    function Composer(aCompletionFun, aBatchWin/* , aDeliverMode */) {
+    function Composer(aCompletionFun, aBatchWin) {
         var me = this;
         log("debug: Composer(): called with (" + aCompletionFun + ", "
             + aBatchWin + ")", 5);
@@ -382,7 +380,6 @@ function Resubmit() {
         this.notifyComplete = function () { aCompletionFun(); };
         this.windowsOpened = 0;
         this.batchWin = aBatchWin;
-//        this.deliverMode = aDeliverMode;
         log("debug: Composer(): creating ProgressListener", 6);
         this.progressListener = new ProgressListener(this.batchWin, function () { me.onMsgComposed(); });
         log("debug: Composer(): initialized", 7);
@@ -408,11 +405,11 @@ function Resubmit() {
                 this.windowsOpened += 1;
                 window.openDialog(url, "_blank", "", aParams, function () { me.onMsgComposed(); });
             } else {
-                fun = function () { me.openComposeWindow(aService, aWindowURL, aParams); }
-                setTimeout(fun, 500);
+                fun = function () { me.openComposeWindow(aService, aWindowURL, aParams); };
+                window.setTimeout(fun, 500);
             }
         },
-        callback: function (aTplHdr, aTplMsg, aAttachment) {
+        apply: function (aTplHdr, aTplMsg, aAttachment) {
             var msgComposeSvc = Cc["@mozilla.org/messengercompose;1"]
                     .getService(Ci.nsIMsgComposeService),
                 msgComposeParams = Cc["@mozilla.org/messengercompose/composeparams;1"]
@@ -433,22 +430,21 @@ function Resubmit() {
     }
 
     Collector.prototype = {
-        callback: function (aMsgHdr, aMimeMsg) {
+        apply: function (aMsgHdr, aMimeMsg) {
             var attachments = aMimeMsg.allUserAttachments || aMimeMsg.allAttachments,
                 attachment,
-                cbObj,
                 i;
-            log("debug: Collector.callback(): attachments.length = " + attachments.length, 7);
+            log("debug: Collector.apply(): attachments.length = " + attachments.length, 7);
             for (i = 0; i < attachments.length; i += 1) {
                 attachment = attachments[i];
                 if (attachment.contentType === "message/rfc822") {
-                    log("debug: Collector.callback(): adding attachment", 6);
+                    log("debug: Collector.apply(): adding attachment", 6);
                     this.attachments.push(attachment);
                 }
             }
-            log("debug: Collector.callback(): invoking this.notifyComplete()", 6);
+            log("debug: Collector.apply(): invoking this.notifyComplete()", 6);
             this.notifyComplete();
-            log("debug: Collector.callback(): returned from this.notifyComplete()", 7);
+            log("debug: Collector.apply(): returned from this.notifyComplete()", 7);
         }
     };
 
@@ -465,35 +461,35 @@ function Resubmit() {
         this.isAvailable = aFlag;
         this.maxConcurrentTasks = 1;
         log("debug: FilterAction(): aMode == " + aMode, 7);
-        switch(aMode) {
-            case self.Modes.SendNow:
-                log("debug: FilterAction(): this.deliverMode = Ci.nsIMsgCompDeliverMode.Now", 6);
-                this.deliverMode = Ci.nsIMsgCompDeliverMode.Now;
-                log("debug: FilterAction(): selecting Submitter as a backend", 6);
-                this.createSubmitter = function (aCompletionFun, aBatchWin) {
-                    return new Submitter(aCompletionFun, aBatchWin, this.deliverMode);
-                }
-                this.maxConcurrentTasks = sendNowMaxMessages;
-                break;
-            case self.Modes.SendLater:
-                log("debug: FilterAction(): this.deliverMode = Ci.nsIMsgCompDeliverMode.Later", 6);
-                this.deliverMode = Ci.nsIMsgCompDeliverMode.Later;
-                log("debug: FilterAction(): selecting Submitter as a backend", 6);
-                this.createSubmitter = function (aCompletionFun, aBatchWin) {
-                    return new Submitter(aCompletionFun, aBatchWin, this.deliverMode);
-                }
-                this.maxConcurrentTasks = sendLaterMaxMessages;
-                break;
-            case self.Modes.Compose:
-                log("debug: FilterAction(): selecting Composer as a backend", 6);
-                this.createSubmitter = function (aCompletionFun, aBatchWin) {
-                    return new Composer(aCompletionFun, aBatchWin);
-                }
-                this.maxConcurrentTasks = composeMaxWindows;
-                break;
-            default:
-                log("error: FilterAction(): invalid value '" + aMode + "' for aMode argument", 1);
-                throw "invalid value '" + aMode + "' for aMode argument";
+        switch (aMode) {
+        case self.Modes.SendNow:
+            log("debug: FilterAction(): this.deliverMode = Ci.nsIMsgCompDeliverMode.Now", 6);
+            this.deliverMode = Ci.nsIMsgCompDeliverMode.Now;
+            log("debug: FilterAction(): selecting Submitter as a backend", 6);
+            this.createSubmitter = function (aCompletionFun, aBatchWin) {
+                return new Submitter(aCompletionFun, aBatchWin, this.deliverMode);
+            };
+            this.maxConcurrentTasks = sendNowMaxMessages;
+            break;
+        case self.Modes.SendLater:
+            log("debug: FilterAction(): this.deliverMode = Ci.nsIMsgCompDeliverMode.Later", 6);
+            this.deliverMode = Ci.nsIMsgCompDeliverMode.Later;
+            log("debug: FilterAction(): selecting Submitter as a backend", 6);
+            this.createSubmitter = function (aCompletionFun, aBatchWin) {
+                return new Submitter(aCompletionFun, aBatchWin, this.deliverMode);
+            };
+            this.maxConcurrentTasks = sendLaterMaxMessages;
+            break;
+        case self.Modes.Compose:
+            log("debug: FilterAction(): selecting Composer as a backend", 6);
+            this.createSubmitter = function (aCompletionFun, aBatchWin) {
+                return new Composer(aCompletionFun, aBatchWin);
+            };
+            this.maxConcurrentTasks = composeMaxWindows;
+            break;
+        default:
+            log("error: FilterAction(): invalid value '" + aMode + "' for aMode argument", 1);
+            throw "invalid value '" + aMode + "' for aMode argument";
         }
         log("debug: FilterAction(): this.maxConcurrentTasks == " + this.maxConcurrentTasks, 7);
         log("debug: FilterAction(): initialized", 6);
@@ -535,6 +531,51 @@ function Resubmit() {
                 log("debug: onMessageSubmitted(): returned from batchWin.setTotalProgress()", 7);
             }
 
+            function submitNextMessage(aCompletionFun) {
+                var callback, attachment;
+                log("debug: submitNextMessage(): called with (" + aCompletionFun + ")", 5);
+                if (submissionCanceled) {
+                    log("debug: submitNextMessage(): if (submissionCanceled == true) { ...", 6);
+                    log("debug: submitNextMessage(): return", 6);
+                    return;
+                }
+                log("debug: submitNextMessage(): submitterReturnCount == " + submitterReturnCount, 7);
+                log("debug: submitNextMessage(): submitterCallCount == " + submitterCallCount, 7);
+                log("debug: submitNextMessage(): collector.attachments.length == " + collector.attachments.length, 7);
+                if (submitterReturnCount < collector.attachments.length) {
+                    log("debug: submitNextMessage(): if (submitterReturnCount < collector.attachments.length) { ...", 6);
+                    if (submitterCallCount < collector.attachments.length) {
+                        log("debug: submitNextMessage(): if (submitterReturnCount < collector.attachments.length) { ...", 6);
+                        log("debug: submitNextMessage(): me.maxConcurrentTasks == " + me.maxConcurrentTasks, 7);
+                        if ((submitterCallCount - submitterReturnCount) < me.maxConcurrentTasks) {
+                            log("debug: submitNextMessage(): if ((submitterCallCount - submitterReturnCount) < me.maxConcurrentTasks) { ...", 6);
+                            attachment = collector.attachments[submitterCallCount];
+                            callback = function (aTplHdr, aTplMsg) {
+                                submitter.apply(aTplHdr, aTplMsg, attachment);
+                            };
+                            //msgHdr = aMsgHdrs.queryElementAt(submitterReturnCount, Ci.nsIMsgDBHdr);
+                            log("debug: submitNextMessage(): incrementing submitterCallCount()", 6);
+                            submitterCallCount += 1;
+                            log("debug: submitNextMessage(): submitterCallCount == " + submitterCallCount, 7);
+                            log("debug: submitNextMessage(): calling MimeMsg.MsgHdrToMimeMessage()", 6);
+                            MimeMsg.MsgHdrToMimeMessage(tplHdr, submitter, callback, false);
+                            log("debug: submitNextMessage(): returned from MimeMsg.MsgHdrToMimeMessage()", 7);
+                        }
+                    }
+                    log("debug: submitNextMessage(): invoking window.setTimeout( { submitNextMessage(...); } )", 6);
+                    window.setTimeout(function () { submitNextMessage(function () { aCompletionFun(); }); }, 50, false);
+                    log("debug: submitNextMessage(): returned from window.setTimeout( { submitNextMessage(...); } )", 7);
+                } else {
+                    log("debug: submitNextMessage(): if (submitterReturnCount < collector.attachments.length) { ... } else { ...", 6);
+                    log("debug: submitNextMessage(): invoking batchWin.setStatus()", 6);
+                    batchWin.setStatus("Submitting messages... done");
+                    log("debug: submitNextMessage(): returned from batchWin.setStatus()", 7);
+                    log("debug: submitNextMessage(): invoking aCompletionFun()", 6);
+                    aCompletionFun();
+                    log("debug: submitNextMessage(): returned from aCompletionFun()", 7);
+                }
+            }
+
             function submitMessages(aCompletionFun) {
                 log("debug: submiteMessages(): called with (" + aCompletionFun + ")", 5);
                 log("debug: submitMessages(): creating Submitter", 6);
@@ -554,51 +595,6 @@ function Resubmit() {
                 log("debug: submitMessages(): invoking submitNextMessage()", 6);
                 submitNextMessage(aCompletionFun);
                 log("debug: submitMessages(): returned from submitNextMessage()", 7);
-            }
-
-            function submitNextMessage(aCompletionFun) {
-                var callback, attachment;
-                log("debug: submitNextMessage(): called with (" + aCompletionFun + ")", 5);
-                if (submissionCanceled) {
-                    log("debug: submitNextMessage(): if(submissionCanceled == true) { ...", 6);
-                    log("debug: submitNextMessage(): return", 6);
-                    return;
-                }
-                log("debug: submitNextMessage(): submitterReturnCount == " + submitterReturnCount, 7);
-                log("debug: submitNextMessage(): submitterCallCount == " + submitterCallCount, 7);
-                log("debug: submitNextMessage(): collector.attachments.length == " + collector.attachments.length, 7);
-                if(submitterReturnCount < collector.attachments.length) {
-                    log("debug: submitNextMessage(): if(submitterReturnCount < collector.attachments.length) { ...", 6);
-                    if (submitterCallCount < collector.attachments.length) {
-                        log("debug: submitNextMessage(): if(submitterReturnCount < collector.attachments.length) { ...", 6);
-                        log("debug: submitNextMessage(): me.maxConcurrentTasks == " + me.maxConcurrentTasks, 7);
-                        if ((submitterCallCount - submitterReturnCount) < me.maxConcurrentTasks) {
-                            log("debug: submitNextMessage(): if((submitterCallCount - submitterReturnCount) < me.maxConcurrentTasks) { ...", 6);
-                            attachment = collector.attachments[submitterCallCount];
-                            callback = function (aTplHdr, aTplMsg) {
-                                submitter.callback(aTplHdr, aTplMsg, attachment);
-                            }
-                            //msgHdr = aMsgHdrs.queryElementAt(submitterReturnCount, Ci.nsIMsgDBHdr);
-                            log("debug: submitNextMessage(): incrementing submitterCallCount()", 6);
-                            submitterCallCount += 1;
-                            log("debug: submitNextMessage(): submitterCallCount == " + submitterCallCount, 7);
-                            log("debug: submitNextMessage(): calling MimeMsg.MsgHdrToMimeMessage()", 6);
-                            MimeMsg.MsgHdrToMimeMessage(tplHdr, submitter, callback, false);
-                            log("debug: submitNextMessage(): returned from MimeMsg.MsgHdrToMimeMessage()", 7);
-                        }
-                    }
-                    log("debug: submitNextMessage(): invoking setTimeout( { submitNextMessage(...); } )", 6);
-                    setTimeout(function () { submitNextMessage(function () { aCompletionFun(); }); }, 50, false);
-                    log("debug: submitNextMessage(): returned from setTimeout( { submitNextMessage(...); } )", 7);
-                } else {
-                    log("debug: submitNextMessage(): if(submitterReturnCount < collector.attachments.length) { ... } else { ...", 6);
-                    log("debug: submitNextMessage(): invoking batchWin.setStatus()", 6);
-                    batchWin.setStatus("Submitting messages... done");
-                    log("debug: submitNextMessage(): returned from batchWin.setStatus()", 7);
-                    log("debug: submitNextMessage(): invoking aCompletionFun()", 6);
-                    aCompletionFun();
-                    log("debug: submitNextMessage(): returned from aCompletionFun()", 7);
-                }
             }
 
             function onSubmissionComplete() {
@@ -628,6 +624,37 @@ function Resubmit() {
                 log("debug: onAttachmentCollected(): returned from batchWin.setProgress()", 7);
             }
 
+            function collectNextAttachment(aCompletionFun) {
+                var msgHdr;
+                log("debug: collectNextAttachment(): called with (" + aCompletionFun + ")", 5);
+                if (collectionCanceled) {
+                    log("debug: collectNextAttachment(): if (collectionCanceled == true) { ...", 6);
+                    log("debug: collectNextAttachment(): return", 6);
+                    return;
+                }
+                log("debug: collectNextAttachment(): collectorReturnCount == " + collectorReturnCount, 7);
+                log("debug: collectNextAttachment(): aMsgHdrs.length == " + aMsgHdrs.length, 7);
+                if (collectorReturnCount < aMsgHdrs.length) {
+                    log("debug: collectNextAttachment(): if (collectorReturnCount < aMsgHdrs.length) { ...", 6);
+                    log("debug: collectNextAttachment(): collectorCallCount == " + collectorCallCount, 7);
+                    if (collectorReturnCount === collectorCallCount) {
+                        log("debug: collectNextAttachment(): if (collectorReturnCount == collectorCallCount) { ...", 6);
+                        msgHdr = aMsgHdrs.queryElementAt(collectorReturnCount, Ci.nsIMsgDBHdr);
+                        collectorCallCount += 1;
+                        log("debug: collectNextAttachment(): invoking MimeMsg.MsgHdrToMimeMessage()", 6);
+                        MimeMsg.MsgHdrToMimeMessage(msgHdr, collector, collector.apply, false);
+                        log("debug: collectNextAttachment(): returned from MimeMsg.MsgHdrToMimeMessage()", 7);
+                    }
+                    window.setTimeout(function () { collectNextAttachment(function () { aCompletionFun(); }); }, 50, false);
+                } else {
+                    log("debug: collectNextAttachment(): if (collectorReturnCount < aMsgHdrs.length) { ... } else { ...", 6);
+                    batchWin.setStatus("Collecting attachments... done");
+                    log("debug: collectNextAttachment(): invoking aCompletionFun()", 6);
+                    aCompletionFun();
+                    log("debug: collectNextAttachment(): returned from aCompletionFun()", 7);
+                }
+            }
+
             function collectAttachments(aCompletionFun) {
                 log("debug: collectAttachments(): called with (" + aCompletionFun + ")", 5);
                 log("debug: collectAttachments(): creating Collector", 6);
@@ -642,37 +669,6 @@ function Resubmit() {
                 log("debug: collectAttachments(): invoking collectNextAttachment()", 6);
                 collectNextAttachment(function () { aCompletionFun(); });
                 log("debug: collectAttachments(): returned from collectNextAttachment()", 7);
-            }
-
-            function collectNextAttachment(aCompletionFun) {
-                var msgHdr;
-                log("debug: collectNextAttachment(): called with (" + aCompletionFun + ")", 5);
-                if (collectionCanceled) {
-                    log("debug: collectNextAttachment(): if(collectionCanceled == true) { ...", 6);
-                    log("debug: collectNextAttachment(): return", 6);
-                    return;
-                }
-                log("debug: collectNextAttachment(): collectorReturnCount == " + collectorReturnCount, 7);
-                log("debug: collectNextAttachment(): aMsgHdrs.length == " + aMsgHdrs.length, 7);
-                if (collectorReturnCount < aMsgHdrs.length) {
-                    log("debug: collectNextAttachment(): if(collectorReturnCount < aMsgHdrs.length) { ...", 6);
-                    log("debug: collectNextAttachment(): collectorCallCount == " + collectorCallCount, 7);
-                    if (collectorReturnCount == collectorCallCount) {
-                        log("debug: collectNextAttachment(): if(collectorReturnCount == collectorCallCount) { ...", 6);
-                        msgHdr = aMsgHdrs.queryElementAt(collectorReturnCount, Ci.nsIMsgDBHdr);
-                        collectorCallCount += 1;
-                        log("debug: collectNextAttachment(): invoking MimeMsg.MsgHdrToMimeMessage()", 6);
-                        MimeMsg.MsgHdrToMimeMessage(msgHdr, collector, collector.callback, false);
-                        log("debug: collectNextAttachment(): returned from MimeMsg.MsgHdrToMimeMessage()", 7);
-                    }
-                    setTimeout(function () { collectNextAttachment(function () { aCompletionFun(); }); }, 50, false);
-                } else {
-                    log("debug: collectNextAttachment(): if(collectorReturnCount < aMsgHdrs.length) { ... } else { ...", 6);
-                    batchWin.setStatus("Collecting attachments... done");
-                    log("debug: collectNextAttachment(): invoking aCompletionFun()", 6);
-                    aCompletionFun();
-                    log("debug: collectNextAttachment(): returned from aCompletionFun()", 7);
-                }
             }
 
             function onCollectionComplete() {
@@ -697,12 +693,12 @@ function Resubmit() {
 
             function onBatchWinCancel() {
                 log("debug: onBatchWinCancel(): called with ()", 5);
-                log("debug: onBatchWinCancel(): invoking cancelJobs()", 6)
+                log("debug: onBatchWinCancel(): invoking cancelJobs()", 6);
                 cancelJobs();
-                log("debug: onBatchWinCancel(): returned from cancelJobs()", 6)
-                log("debug: onBatchWinCancel(): invoking batchWin.close()", 6)
+                log("debug: onBatchWinCancel(): returned from cancelJobs()", 6);
+                log("debug: onBatchWinCancel(): invoking batchWin.close()", 6);
                 batchWin.close();
-                log("debug: onBatchWinCancel(): returned from batchWin.close()", 7)
+                log("debug: onBatchWinCancel(): returned from batchWin.close()", 7);
             }
 
             function onBatchWinLoad(e) {
