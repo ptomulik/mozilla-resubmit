@@ -1,0 +1,18 @@
+#! /bin/sh
+CONTENT="chrome.manifest install.rdf content defaults locale skin"
+RE='^\s*<em:version>\([0-9\.]\+\)</em:version>\s*$'
+
+VERSION=`grep "$RE" install.rdf | sed -e "s|$RE|\1|g"`
+
+if [ ! -z "$VERSION" ]; then
+  XPI="resubmit-${VERSION}.xpi"
+else
+  XPI="resubmit.xpi"
+fi
+
+echo -n "build-xpi: building ${XPI}... "
+if zip -r "${XPI}" $CONTENT > /dev/null; then
+  echo "done."
+else
+  echo "failed."
+fi
