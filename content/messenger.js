@@ -336,12 +336,12 @@ function Resubmit() {
             log("debug: Submitter.onMsgSent(): returned from this.notifyComplete()", 7);
         },
         sendMsg: function (aMsgCompose, aDeliverMode, aIdentity, aAccount, aWindow, aProgress) {
-            // Prevent multiple simultaneous calls to aMsgCompose.SendMsg().
             var me = this;
             log("debug: Submitter.sendMsg(): called with (" + aMsgCompose
                  + ", " + aDeliverMode + ", " + aIdentity + ", " + aAccount
                  + ", " + aWindow + ", " + aProgress + ")", 5);
             log("debug: Submitter.sendMsg(): this.sendMsgsInProgress == " + this.sendMsgsInProgress, 7);
+            // Prevent multiple simultaneous calls to aMsgCompose.SendMsg().
             if (this.sendMsgsInProgress < 1) {
                 this.sendMsgsInProgress += 1;
                 log("debug: Submitter.sendMsg(): invoking aMsgCompose.SendMsg()", 6);
