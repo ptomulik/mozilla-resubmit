@@ -19,8 +19,8 @@ function Resubmit() {
         composeMaxWindows,      // extensions.resubmit.compose.max_windows
         sendNowEnabled,         // extensions.resubmit.sendnow.enabled
         sendNowMaxMessages,     // extensions.resubmit.sendnow.max_messages
-        sendLaterEnabled,       // extensions.resubmit.sendnow.enabled
-        sendLaterMaxMessages,   // extensions.resubmit.sendnow.max_messages
+        sendLaterEnabled,       // extensions.resubmit.sendlater.enabled
+        sendLaterMaxMessages,   // extensions.resubmit.sendlater.max_messages
         MimeMsg = {};
 
     self.initialized = false;
