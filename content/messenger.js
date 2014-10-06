@@ -559,7 +559,7 @@ function Resubmit() {
                             submitterCallCount += 1;
                             log("debug: submitNextMessage(): submitterCallCount == " + submitterCallCount, 7);
                             log("debug: submitNextMessage(): calling MimeMsg.MsgHdrToMimeMessage()", 6);
-                            MimeMsg.MsgHdrToMimeMessage(tplHdr, submitter, callback, false);
+                            MimeMsg.MsgHdrToMimeMessage(tplHdr, submitter, callback, true);
                             log("debug: submitNextMessage(): returned from MimeMsg.MsgHdrToMimeMessage()", 7);
                         }
                     }
@@ -643,7 +643,7 @@ function Resubmit() {
                         msgHdr = aMsgHdrs.queryElementAt(collectorReturnCount, Ci.nsIMsgDBHdr);
                         collectorCallCount += 1;
                         log("debug: collectNextAttachment(): invoking MimeMsg.MsgHdrToMimeMessage()", 6);
-                        MimeMsg.MsgHdrToMimeMessage(msgHdr, collector, collector.apply, false);
+                        MimeMsg.MsgHdrToMimeMessage(msgHdr, collector, collector.apply, true);
                         log("debug: collectNextAttachment(): returned from MimeMsg.MsgHdrToMimeMessage()", 7);
                     }
                     window.setTimeout(function () { collectNextAttachment(function () { aCompletionFun(); }); }, 50, false);
