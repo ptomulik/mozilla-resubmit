@@ -422,11 +422,12 @@ function Resubmit() {
         }
     };
 
-    function Collector(aCompletionFun) {
-        log("debug: Collector(): called with (" + aCompletionFun + ")", 5);
+    function Collector(aCompletionFun,aReattach) {
+        log("debug: Collector(): called with (" + aCompletionFun + ", " + aReattach + ")", 5);
         log("debug: Collector(): initializing attributes", 6);
         this.notifyComplete = function () { aCompletionFun(); };
         this.attachments = [];
+        this.reattach = aReattach;
         log("debug: Collector(): initialized", 6);
     }
 
@@ -436,12 +437,22 @@ function Resubmit() {
                 attachment,
                 i;
             log("debug: Collector.apply(): attachments.length = " + attachments.length, 7);
-            for (i = 0; i < attachments.length; i += 1) {
-                attachment = attachments[i];
-                if (attachment.contentType === "message/rfc822") {
-                    log("debug: Collector.apply(): adding attachment", 6);
-                    this.attachments.push(attachment);
+            if(this.reattach) {
+                for (i = 0; i < attachments.length; i += 1) {
+                    attachment = attachments[i];
+                    if (attachment.contentType === "message/rfc822") {
+                        log("debug: Collector.apply(): adding attachment", 6);
+                        this.attachments.push(attachment);
+                    }
                 }
+            } else {
+                log("debug: Collector.apply(): creating attachment from message", 6);
+                attachment = Cc["@mozilla.org/messengercompose/attachment;1"]
+                    .createInstance(Components.interfaces.nsIMsgAttachment);
+                attachment.url = aMsgHdr.folder.getUriForMsg(aMsgHdr);
+                attachment.name = aMsgHdr.subject + ".eml";
+                log("debug: Collector.apply(): adding attachment", 6);
+                this.attachments.push(attachment);
             }
             log("debug: Collector.apply(): invoking this.notifyComplete()", 6);
             this.notifyComplete();
@@ -452,16 +463,18 @@ function Resubmit() {
     /**
      * Usage: action = new FilterAction(...)
      */
-    function FilterAction(aId, aName, aMode, aFlag) {
+    function FilterAction(aId, aName, aMode, aFlag, aReattach) {
         log("debug: FilterAction(): called with (" + aId + ", " + aName + ", "
-            + aMode + ", " + aFlag + ")", 5);
+            + aMode + ", " + aFlag + ", " + aReattach + ")", 5);
         log("debug: FilterAction(): initializing attributes", 6);
         this.id = aId;
         this.name = aName;
         this.mode = aMode;
         this.isAvailable = aFlag;
+        this.reattach = aReattach;
         this.maxConcurrentTasks = 1;
         log("debug: FilterAction(): aMode == " + aMode, 7);
+        log("debug: FilterAction(): aReattach == " + aReattach, 7);
         switch (aMode) {
         case self.Modes.SendNow:
             log("debug: FilterAction(): this.deliverMode = Ci.nsIMsgCompDeliverMode.Now", 6);
@@ -659,7 +672,7 @@ function Resubmit() {
             function collectAttachments(aCompletionFun) {
                 log("debug: collectAttachments(): called with (" + aCompletionFun + ")", 5);
                 log("debug: collectAttachments(): creating Collector", 6);
-                collector = new Collector(function () { onAttachmentCollected(); });
+                collector = new Collector(function () { onAttachmentCollected(); }, me.reattach);
                 log("debug: collectAttachments(): created Collector", 7);
                 log("debug: collectAttachments(): reseting collector flags and counters", 6);
                 collectionCanceled = false;
@@ -757,34 +770,64 @@ function Resubmit() {
 
         var filterService = Cc["@mozilla.org/messenger/services/filters;1"]
                 .getService(Ci.nsIMsgFilterService),
-            actionCompose,
-            actionSendNow,
-            actionSendLater;
+            actionComposeAtt,
+            actionSendNowAtt,
+            actionSendLaterAtt,
+            actionComposeMsg,
+            actionSendNowMsg,
+            actionSendLaterMsg;
 
         // Create custom a actions
-        actionSendNow = new FilterAction(
+        actionSendNowAtt = new FilterAction(
             "resubmit@ezamber.pl#actionSendNow",
             self.strings.getString("resubmit.sendnow.name"),
             self.Modes.SendNow,
-            sendNowEnabled
+            sendNowEnabled,
+            true
         );
-        actionSendLater = new FilterAction(
+        actionSendLaterAtt = new FilterAction(
             "resubmit@ezamber.pl#actionSendLater",
             self.strings.getString("resubmit.sendlater.name"),
             self.Modes.SendLater,
-            sendLaterEnabled
+            sendLaterEnabled,
+            true
         );
-        actionCompose = new FilterAction(
+        actionComposeAtt = new FilterAction(
             "resubmit@ezamber.pl#actionCompose",
             self.strings.getString("resubmit.compose.name"),
             self.Modes.Compose,
-            composeEnabled
+            composeEnabled,
+            true
+        );
+        actionSendNowMsg = new FilterAction(
+            "resubmit@ezamber.pl#actionSendNowMsg",
+            self.strings.getString("resubmit.sendnowmsg.name"),
+            self.Modes.SendNow,
+            sendNowEnabled,
+            false
+        );
+        actionSendLaterMsg = new FilterAction(
+            "resubmit@ezamber.pl#actionSendLaterMsg",
+            self.strings.getString("resubmit.sendlatermsg.name"),
+            self.Modes.SendLater,
+            sendLaterEnabled,
+            false
+        );
+        actionComposeMsg = new FilterAction(
+            "resubmit@ezamber.pl#actionComposeMsg",
+            self.strings.getString("resubmit.composemsg.name"),
+            self.Modes.Compose,
+            composeEnabled,
+            false
         );
 
         // Register custom actions
-        filterService.addCustomAction(actionCompose);
-        filterService.addCustomAction(actionSendNow);
-        filterService.addCustomAction(actionSendLater);
+        filterService.addCustomAction(actionComposeAtt);
+        filterService.addCustomAction(actionSendNowAtt);
+        filterService.addCustomAction(actionSendLaterAtt);
+        filterService.addCustomAction(actionComposeMsg);
+        filterService.addCustomAction(actionSendNowMsg);
+        filterService.addCustomAction(actionSendLaterMsg);
     };
 
     self.onLoad = function (e) {

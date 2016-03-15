@@ -7,12 +7,13 @@ multiple senders.
 Overview
 --------
 
-This tool is designated for network/mail administrators. Having a bunch of
-messages forwarded to you by your users, the **Resubmit** tool extracts all
-attached messages from these emails, then for each extracted message it
-composes a **new** message with the extracted message attached to it and sends
-the **new** message  to a specified recipient(s). It's particularly useful as
-a tool for supervised spam/ham sample resubmission.
+This tool helps with an automatic resubmission of messages to a predefined
+destination. Its most common purpose is a (re)submission of spam samples to a
+spam reporting centre. Having a bunch of messages (possibly forwarded to you
+as attachments), the **Resubmit** tool composes a **new** message with the
+original one attached to it and sends the **new** message  to a specified
+recipient(s). It's particularly useful as a tool for supervised spam/ham sample
+resubmission.
 
 Motivation
 ----------
@@ -31,24 +32,37 @@ and re-submit them manually. So, this is basically job for a tool such as
 More details
 ------------
 
-The extension defines three new filter actions, which may be used to create
+The extension defines six new filter actions, which may be used to create
 custom filters for resubmission. The filter actions are:
 
-- **Resubmit - Send Now (Template)**,
-- **Resubmit - Send Later (Template)**, and
-- **Resubmit - Compose (Template)**.
+- **Resubmit - Send Now (Attachments + Template)**,
+- **Resubmit - Send Later (Attachments + Template)**,
+- **Resubmit - Compose (Attachments + Template)**,
+- **Resubmit - Send Now (Message + Template)**,
+- **Resubmit - Send Later (Message + Template)**, and
+- **Resubmit - Compose (Message + Template)**.
 
 Each action uses a template message which defines all the details of the
 **new** message to be sent. Specifically, it contains sender and recipient
 addresses, subject and content. The filter action just appends an attachment
-(extracted from the source message) to the template and submits it in this
-form. 
+(being an attachment extracted from the source message or the source message
+itself) to the template and submits it in this form.
 
-The **Resubmit - Send Now (Template)** action wraps an extracted attachment
-with template message and sends it to recipient(s) specified in the template.
-The **Resubmit - Send Later (Template)** does the similar, but queues the
-composed **new** message to be sent later. The **Resubmit - Compose 
-(Template)** opens every **new** message in a compose window and lets you
+The **Resubmit - Send Now (Attachments + Template)** action wraps an extracted
+attachment with template message and sends it to recipient(s) specified in the
+template. The **Resubmit - Send Later (Attachment + Template)** does the
+similar, but queues the composed **new** message to be sent later. The
+**Resubmit - Compose (Attachment + Template)** opens every **new** message in a
+compose window and lets you inspect it, modify, send, save, queue or do
+whatever the compose window allows to.
+
+The **Resubmit - Send Now (Message + Template)** action wraps the original
+message with template message and sends it to recipient(s) specified in the
+template (it's equivalent to a **forward as attachment** functionality, so that
+the source message get's forwarded as an attachment to template message). The
+**Resubmit - Send Later (Message + Template)** does the similar, but queues the
+composed **new** message to be sent later. The **Resubmit - Compose (Message +
+Template)** opens every **new** message in a compose window and lets you
 inspect it, modify, send, save, queue or do whatever the compose window allows
 to.
 
@@ -65,20 +79,20 @@ is to use the filter.
    .. image:: images/resubmit-compose-template.png
      :align: center
 
-#. Create new filter. Go to *Tools* | *Filter*, create a new filter, name it
-   for example *Process User Reported Spam*.
+#. Create new filter. Go to *Tools* | *Message Filters*, create a new filter,
+   name it for example *Process User Reported Spam*.
 
    .. image:: images/resubmit-filter-list.png
      :align: center
 
    configure the filter conditions and add one of the **Resubmit** actions, for
-   example **Resubmit - Send Now (Template)**. Choose the previously saved
-   template.
+   example **Resubmit - Send Now (Attachments + Template)**. Choose the
+   previously saved template.
 
    .. image:: images/resubmit-filter-dialog.png
      :align: center
-   
-#. Apply the filter, e.g. *Tools* | *Apply filters to selected messages*.
+
+#. Apply the filter, e.g. *Tools* | *Run Filters on Message*.
 
    .. image:: images/resubmit-batchwin.png
      :align: center
@@ -108,7 +122,7 @@ settings - ``Enable ...`` check-box and ``Max.  no. of ....`` text field. The
 certain action, it will be unavailable for selection when creating mail
 filters. The ``Max. no. of ...`` defines the maximum number of messages being
 sent concurrently or (in case of **Compose** action) maximum number of compose
-windows being opened simultaneously. 
+windows being opened simultaneously.
 
 .. image:: images/resubmit-cfgdialog-actions.png
   :align: center
@@ -125,7 +139,7 @@ Debugging
 ---------
 
 If you need to change debugging options for **Resubmit** but have problems with
-running the configuration dialog, go to the Thunderbird's settings editor 
+running the configuration dialog, go to the Thunderbird's settings editor
 (*Edit* | *Preferences* | *Advanced* | *Settings editor*) and adjust the
 following preferences::
 
@@ -136,14 +150,14 @@ The possible values of debugging level are ``1`` to ``7``.
 
 If you need early debugging, run the **Thunderbird** from CLI as follows::
 
-    thunderbird -jsconsole & 
+    thunderbird -jsconsole &
 
 License
 -------
 
 Resubmit - a Thunderbird extension to re-submit attached messages.
 
-Copyright (C) 2014  Paweł Tomulik <ptomulik@meil.pw.edu.pl>
+Copyright (C) 2014-2016  Paweł Tomulik <ptomulik@meil.pw.edu.pl>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -159,4 +173,4 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 .. _Best Practices - Submitting spam samples to McAfee: https://community.mcafee.com/docs/DOC-1409
-.. _Mail Merge: https://addons.mozilla.org/thunderbird/addon/mail-merge/ 
+.. _Mail Merge: https://addons.mozilla.org/thunderbird/addon/mail-merge/
