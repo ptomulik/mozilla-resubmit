@@ -32,8 +32,8 @@ function Resubmit() {
         Compose:    2
     };
 
-    Cu.import("resource://app/modules/gloda/mimemsg.js", MimeMsg);
-    Cu.import("resource://app/modules/MailUtils.js");
+    Cu.import("resource:///modules/gloda/mimemsg.js", MimeMsg);
+    Cu.import("resource:///modules/MailUtils.js");
 
     (function readPrefs() {
 
