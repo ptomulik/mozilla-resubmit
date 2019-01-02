@@ -157,7 +157,7 @@ License
 
 Resubmit - a Thunderbird extension to re-submit attached messages.
 
-Copyright (C) 2014-2018  Paweł Tomulik <ptomulik@meil.pw.edu.pl>
+Copyright (C) 2014-2019  Paweł Tomulik <ptomulik@meil.pw.edu.pl>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
