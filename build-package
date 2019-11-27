@@ -1,5 +1,5 @@
 #! /bin/sh
-CONTENT="chrome.manifest install.rdf content defaults locale skin"
+CONTENT="chrome.manifest install.rdf manifest.json content defaults locale skin"
 RE='^\s*<em:version>\([0-9\.]\+\)</em:version>\s*$'
 
 VERSION=`grep "$RE" install.rdf | sed -e "s|$RE|\1|g"`
