@@ -1,57 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://messenger/skin/preferences/preferences.css" type="text/css"?>
 <!DOCTYPE prefwindow SYSTEM "chrome://resubmit/locale/options.dtd">
 
 <prefwindow id = "prefwindow" title = "&prefwindow.title;"
   xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
   onload = "onLoad();">
 
-  <script type = "application/javascript" 
+  <script type = "application/javascript"
     src = "chrome://resubmit/content/options.js"/>
 
   <prefpane id="pane1" label="Pane 1">
     <!--                          PREFERENCES                         -->
     <preferences>
-      <preference id="debugEnabled" 
+      <preference id="debugEnabled"
         name="extensions.resubmit.debug.enabled" type="bool"/>
     </preferences>
     <preferences>
-      <preference id="debugLevel" 
+      <preference id="debugLevel"
         name="extensions.resubmit.debug.level" type="int"/>
     </preferences>
     <preferences>
-      <preference id="sendNowEnabled" 
+      <preference id="sendNowEnabled"
         name="extensions.resubmit.sendnow.enabled" type="bool"/>
     </preferences>
     <preferences>
-      <preference id="sendNowMaxMessages" 
+      <preference id="sendNowMaxMessages"
         name="extensions.resubmit.sendnow.max_messages" type="int"/>
     </preferences>
     <preferences>
-      <preference id="sendLaterEnabled" 
+      <preference id="sendLaterEnabled"
         name="extensions.resubmit.sendlater.enabled" type="bool"/>
     </preferences>
     <preferences>
-      <preference id="sendLaterMaxMessages" 
+      <preference id="sendLaterMaxMessages"
         name="extensions.resubmit.sendlater.max_messages" type="int"/>
     </preferences>
     <preferences>
-      <preference id="composeEnabled" 
+      <preference id="composeEnabled"
         name="extensions.resubmit.compose.enabled" type="bool"/>
     </preferences>
     <preferences>
-      <preference id="composeMaxWindows" 
+      <preference id="composeMaxWindows"
         name="extensions.resubmit.compose.max_windows" type="int"/>
     </preferences>
 
     <!--                           WIDGETS                            -->
     <tabbox>
       <tabs>
-        <tab id="prefwindow.tab1" 
-                   label="&prefwindow.tab1.label;" 
+        <tab id="prefwindow.tab1"
+                   label="&prefwindow.tab1.label;"
                    linkedpanel="prefwindow.tabpanel1"/>
-        <tab id="prefwindow.tab2" 
-                   label="&prefwindow.tab2.label;" 
+        <tab id="prefwindow.tab2"
+                   label="&prefwindow.tab2.label;"
                    linkedpanel="prefwindow.tabpanel2"/>
       </tabs>
       <tabpanels>
@@ -92,7 +93,7 @@
                   <!-- Checkbox -->
                   <checkbox id = "checkSendLaterEnabled"
                             label = "&checkSendLaterEnabled.label;"
-                            preference = "sendNowEnabled"/>
+                            preference = "sendLaterEnabled"/>
 
                   <!-- Textbox -->
                   <label value = "&textSendLaterMaxMessages.label;" />
@@ -100,7 +101,7 @@
                             type = "number"
                             min = "1"
                             max = "4"
-                            preference = "sendNowMaxMessages"/>
+                            preference = "sendLaterMaxMessages"/>
                 </groupbox>
 
                 <!-- Compose -->
