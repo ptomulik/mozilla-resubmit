@@ -11,7 +11,7 @@
     };
     window.setStatus = function (aString) {
         var elem = document.getElementById("resubmit-batch-status");
-        elem.label = aString;
+        elem.value = aString;
     };
     window.batchDone = function () {
         var btnClose = document.getElementById("resubmit-batch-close"),

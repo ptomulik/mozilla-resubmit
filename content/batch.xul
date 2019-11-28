@@ -1,32 +1,43 @@
 <?xml version="1.0"?>
 <?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://messenger/skin/messenger.css" type="text/css"?>
 <window
   id = "resubmit-batch"
   title = "Resubmit - Sending Progress"
   orient = "vertical"
   width = "480"
-  xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script type="application/x-javascript" src="chrome://resubmit/content/debug.js"/>
-  <script type = "application/x-javascript"  src = "chrome://resubmit/content/batch.js"/>
+  xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+  xmlns:html="http://www.w3.org/1999/xhtml">
+
   <groupbox>
-    <caption label="Progress"/>
-    <grid>
+    <hbox class="groupbox-title">
+      <label class="header">Progress</label>
+    </hbox>
+    <grid flex="1">
       <columns>
         <column/>
         <column flex="1"/>
       </columns>
       <rows>
-        <row>
-          <label value="Current"/>
-          <progressmeter id="resubmit-batch-progress" mode="determined"/>
+        <row align="left">
+          <hbox>
+            <label value="Current"/>
+          </hbox>
+          <html:progress id="resubmit-batch-progress" max="100"/>
         </row>
-        <row>
-          <label value="Total"/>
-          <progressmeter id="resubmit-batch-totalProgress" mode="determined"/>
+        <row align="left">
+          <hbox>
+            <label value="Total"/>
+          </hbox>
+          <html:progress id="resubmit-batch-totalProgress" max="100"/>
         </row>
-        <row>
-          <statusbarpanel id="resubmit-batch-statusTitle" label="Status"/>
-          <statusbarpanel id="resubmit-batch-status" flex="1"/>
+        <row align="left">
+          <hbox class="statusbar">
+            <label class="statuspanel" id="resubmit-batch-statusTitle" value="Status"/>
+          </hbox>
+          <hbox class="statusbar">
+            <label class="statuspanel" id="resubmit-batch-status" flex="1"/>
+          </hbox>
         </row>
       </rows>
     </grid>
@@ -43,4 +54,8 @@
             disabled="true"
             oncommand="window.close();"/>
   </hbox>
+
+  <script type="application/javascript" src="chrome://resubmit/content/debug.js"/>
+  <script type="application/javascript" src="chrome://resubmit/content/batch.js"/>
+
 </window>
