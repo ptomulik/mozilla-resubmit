@@ -6,8 +6,8 @@
   orient = "vertical"
   width = "480"
   xmlns = "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
-  <script type="application/x-javascript" src="chrome://resubmit/content/debug.js"/>
-  <script type = "application/x-javascript"  src = "chrome://resubmit/content/batch.js"/>
+  <script type="application/javascript" src="chrome://resubmit/content/debug.js"/>
+  <script type="application/javascript" src="chrome://resubmit/content/batch.js"/>
   <groupbox>
     <caption label="Progress"/>
     <grid>

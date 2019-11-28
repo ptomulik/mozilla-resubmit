@@ -10,7 +10,6 @@ function Resubmit() {
 
     var Cc = Components.classes,
         Ci = Components.interfaces,
-        Cu = Components.utils,
         self = this,
         prefs = Cc["@mozilla.org/preferences-service;1"]
             .getService(Ci.nsIPrefService)
@@ -32,8 +31,8 @@ function Resubmit() {
         Compose:    2
     };
 
-    Cu.import("resource:///modules/gloda/mimemsg.js", MimeMsg);
-    Cu.import("resource:///modules/MailUtils.js");
+    MimeMsg = ChromeUtils.import("resource:///modules/gloda/mimemsg.js");
+    ChromeUtils.import("resource:///modules/MailUtils.jsm");
 
     (function readPrefs() {
 
@@ -514,7 +513,7 @@ function Resubmit() {
         apply: function (aMsgHdrs, aActionValue, aListener, aType, aMsgWindow) {
             var me = this,
                 info = parseTemplateUrl(aActionValue),
-                folder = MailUtils.getFolderForURI(info.folderURI),
+                folder = MailUtils.getExistingFolder(info.folderURI),
                 tplHdr = CheckForMessageIdInFolder(folder, info.messageId),
                 collector,
                 collectorReturnCount,
@@ -766,7 +765,7 @@ function Resubmit() {
     };
 
     self.init = function () {
-        self.strings = document.getElementById("resubmit-strings");
+        self.strings = Services.strings.createBundle("chrome://resubmit/locale/resubmit.properties");
 
         var filterService = Cc["@mozilla.org/messenger/services/filters;1"]
                 .getService(Ci.nsIMsgFilterService),
@@ -780,42 +779,42 @@ function Resubmit() {
         // Create custom a actions
         actionSendNowAtt = new FilterAction(
             "resubmit@ezamber.pl#actionSendNow",
-            self.strings.getString("resubmit.sendnow.name"),
+            self.strings.GetStringFromName("resubmit.sendnow.name"),
             self.Modes.SendNow,
             sendNowEnabled,
             true
         );
         actionSendLaterAtt = new FilterAction(
             "resubmit@ezamber.pl#actionSendLater",
-            self.strings.getString("resubmit.sendlater.name"),
+            self.strings.GetStringFromName("resubmit.sendlater.name"),
             self.Modes.SendLater,
             sendLaterEnabled,
             true
         );
         actionComposeAtt = new FilterAction(
             "resubmit@ezamber.pl#actionCompose",
-            self.strings.getString("resubmit.compose.name"),
+            self.strings.GetStringFromName("resubmit.compose.name"),
             self.Modes.Compose,
             composeEnabled,
             true
         );
         actionSendNowMsg = new FilterAction(
             "resubmit@ezamber.pl#actionSendNowMsg",
-            self.strings.getString("resubmit.sendnowmsg.name"),
+            self.strings.GetStringFromName("resubmit.sendnowmsg.name"),
             self.Modes.SendNow,
             sendNowEnabled,
             false
         );
         actionSendLaterMsg = new FilterAction(
             "resubmit@ezamber.pl#actionSendLaterMsg",
-            self.strings.getString("resubmit.sendlatermsg.name"),
+            self.strings.GetStringFromName("resubmit.sendlatermsg.name"),
             self.Modes.SendLater,
             sendLaterEnabled,
             false
         );
         actionComposeMsg = new FilterAction(
             "resubmit@ezamber.pl#actionComposeMsg",
-            self.strings.getString("resubmit.composemsg.name"),
+            self.strings.GetStringFromName("resubmit.composemsg.name"),
             self.Modes.Compose,
             composeEnabled,
             false

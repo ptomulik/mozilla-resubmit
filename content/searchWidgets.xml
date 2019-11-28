@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+
+<!--
+  This file has the following external dependencies:
+      -gFilterActionStrings from FilterEditor.js
+      -gFilterList from FilterEditor.js
+      -gFilter from FilterEditor.js
+      -gCustomActions from FilterEditor.js
+      -gFilterType from FilterEditor.js
+      -checkActionsReorder from FilterEditor.js
+-->
+<!-- import-globals-from FilterEditor.js -->
+
+<!DOCTYPE dialog [
+  <!ENTITY % filterEditorDTD SYSTEM "chrome://messenger/locale/FilterEditor.dtd" >
+%filterEditorDTD;
+  <!ENTITY % messengerDTD    SYSTEM "chrome://messenger/locale/messenger.dtd" >
+%messengerDTD;
+]>
+
+<bindings id="resubmitFilterBindings"
+          xmlns="http://www.mozilla.org/xbl"
+          xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
+          xmlns:xbl="http://www.mozilla.org/xbl">
+
+  <binding id="ruleactiontarget-replyto">
+    <content>
+      <xul:ruleactiontarget-replyto/>
+    </content>
+  </binding>
+
+</bindings>
