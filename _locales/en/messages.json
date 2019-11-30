@@ -1,6 +1,6 @@
 {
-  "optionsPage_title": {
-    "message": "Resubmit Preferences"
+  "optionsPage.title": {
+    "message": "Resubmit add-on options"
   },
 
   "optionsPage.actions.title": {
