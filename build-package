@@ -1,5 +1,5 @@
 #! /bin/sh
-CONTENT="chrome.manifest manifest.json content defaults locale skin"
+CONTENT="icons images _locales manifest.json options README.rst"
 RE='^\s*"version"\s*:\s*"\([0-9\.]\+\(-\w\+\)\?\)"\s*,\s*$'
 
 VERSION=`grep "$RE" manifest.json | sed -e "s|$RE|\1|g"`

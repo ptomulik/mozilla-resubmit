@@ -1,0 +1,78 @@
+div.form-section {
+  margin: 10px 0px;
+}
+
+div.title {
+  font-weight: bold;
+  background-color: #eee;
+  padding: 4px 15px;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+div.form-row {
+  padding: 8px 15px;
+  margin: 2px 0px;
+  background-color: transparent;
+  border: 1px solid #eee;
+}
+
+div.form-inline {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+/* Add some margins for each label */
+div.form-inline label {
+  margin: 5px 10px 5px 0;
+}
+
+/* Style the input fields */
+div.form-inline input {
+  vertical-align: middle;
+  margin: 5px 10px 5px 0;
+  padding: 10px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+
+/* Style the small number inputs */
+div.form-inline input.number-3 {
+  width: 3em;
+}
+
+/* Style the submit button */
+div.form-inline button {
+  padding: 10px 20px;
+  background-color: dodgerblue;
+  border: 1px solid #ddd;
+  color: white;
+}
+
+div.form-inline button:hover {
+  background-color: royalblue;
+}
+
+div.form-inline label.setting-name {
+  width: 10em;
+  font-weight: bold;
+  text-align: right;
+}
+
+div.form-inline label.setting-param {
+  width: 16em;
+  text-align: right;
+}
+
+/* Add responsiveness - display the form controls vertically instead of horizontally on screens that are less than 800px wide */
+/*@media (max-width: 800px) {
+  .form-inline input {
+    margin: 10px 0;
+  }
+
+  .form-inline {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}*/

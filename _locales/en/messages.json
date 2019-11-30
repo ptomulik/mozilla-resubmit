@@ -1,0 +1,57 @@
+{
+  "optionsPage_title": {
+    "message": "Resubmit Preferences"
+  },
+
+  "optionsPage.actions.title": {
+    "message": "Available Filter Actions"
+  },
+
+  "optionsPage.inputComposeEnabled.label": {
+    "message": "Compose"
+  },
+
+  "optionsPage.inputComposeMaxWindows.label": {
+    "message": "Max windows at once"
+  },
+
+  "optionsPage.inputSendNowEnabled.label": {
+    "message": "Send Now"
+  },
+
+  "optionsPage.inputSendNowMaxMessages.label": {
+    "message": "Max messages at once"
+  },
+
+  "optionsPage.gboxSendLater.tooltiptext": {
+    "message": "Configure the Send Later filter action"
+  },
+
+  "optionsPage.inputSendLaterEnabled.label": {
+    "message": "Send Later"
+  },
+
+  "optionsPage.inputSendLaterMaxMessages.label": {
+    "message": "Max messages at once"
+  },
+
+  "optionsPage.debug.title": {
+    "message": "Debug Settings"
+  },
+
+  "optionsPage.gboxDebug.tooltiptext": {
+    "message": "Set debugging options"
+  },
+
+  "optionsPage.inputDebugEnabled.label": {
+    "message": "Debug"
+  },
+
+  "optionsPage.inputDebugLevel.label": {
+    "message": "Debug level"
+  },
+
+  "optionsPage.submitButton.text": {
+    "message": "Save"
+  }
+}

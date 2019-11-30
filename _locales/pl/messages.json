@@ -1,0 +1,57 @@
+{
+  "optionsPage.title": {
+    "message": "Resubmit Preferences"
+  },
+
+  "optionsPage.actions.title": {
+    "message": "Dostępne Akcje Filtrów"
+  },
+
+  "optionsPage.inputComposeEnabled.label": {
+    "message": "Otwórz"
+  },
+
+  "optionsPage.inputComposeMaxWindows.label": {
+    "message": "Okien jednocześnie"
+  },
+
+  "optionsPage.inputSendNowEnabled.label": {
+    "message": "Wyślij teraz"
+  },
+
+  "optionsPage.inputSendNowMaxMessages.label": {
+    "message": "Wiadomości jednocześnie"
+  },
+
+  "optionsPage.sendNow.tooltiptext": {
+    "message": "Configure the Send Later filter action"
+  },
+
+  "optionsPage.inputSendLaterEnabled.label": {
+    "message": "Wyślij Później"
+  },
+
+  "optionsPage.inputSendLaterMaxMessages.label": {
+    "message": "Wiadomości jednocześnie"
+  },
+
+  "optionsPage.debug.title": {
+    "message": "Ustawienia Debugowania"
+  },
+
+  "optionsPage.gboxDebug.tooltiptext": {
+    "message": "Set debugging options"
+  },
+
+  "optionsPage.inputDebugEnabled.label": {
+    "message": "Debuguj"
+  },
+
+  "optionsPage.inputDebugLevel.label": {
+    "message": "Poziom debuggingu"
+  },
+
+  "optionsPage.submitButton.text": {
+    "message": "Zapisz"
+  }
+}

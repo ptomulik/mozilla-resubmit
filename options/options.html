@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" type="text/css" href="options.css"/>
+  </head>
+  <body>
+    <form id="options-form">
+
+    <div class="form-section">
+      <div class="title" data-i18n="optionsPage.actions.title"></div>
+
+      <div class="form-inline form-row">
+        <label for="inputSendNowEnabled" class="setting-name" data-i18n="optionsPage.inputSendNowEnabled.label"></label>
+        <input id="inputSendNowEnabled" type="checkbox"/>
+        <label for="inputSendNowMaxMessages" class="setting-param" data-i18n="optionsPage.inputSendNowMaxMessages.label"></label>
+        <input id="inputSendNowMaxMessages" class="number-3" type="number" min="1" max="4"/>
+      </div>
+
+      <div class="form-inline form-row">
+        <label for="inputSendLaterEnabled" class="setting-name" data-i18n="optionsPage.inputSendLaterEnabled.label"></label>
+        <input id="inputSendLaterEnabled" type="checkbox"/>
+        <label for="inputSendLaterMaxMessages" class="setting-param" data-i18n="optionsPage.inputSendLaterMaxMessages.label"></label>
+        <input id="inputSendLaterMaxMessages" class="number-3" type="number" min="1" max="4"/>
+      </div>
+
+      <div class="form-inline form-row">
+        <label for="inputComposeEnabled" class="setting-name" data-i18n="optionsPage.inputComposeEnabled.label"></label>
+        <input id="inputComposeEnabled" type="checkbox"/>
+        <label for="inputComposeMaxWindows" class="setting-param" data-i18n="optionsPage.inputComposeMaxWindows.label"></label>
+        <input id="inputComposeMaxWindows" class="number-3" type="number" min="1" max="20"/>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <div class="title" data-i18n="optionsPage.debug.title"></div>
+      <div class="form-inline form-row">
+        <label for="inputDebugEnabled" class="setting-name" data-i18n="optionsPage.inputDebugEnabled.label"></label>
+        <input id="inputDebugEnabled" type="checkbox"/>
+        <label for="inputDebugLevel" class="setting-param" data-i18n="optionsPage.inputDebugLevel.label"></label>
+        <input id="inputDebugLevel" class="number-3" type="number" min="1" max="7"/>
+      </div>
+    </div>
+
+    <button type="submit" data-i18n="optionsPage.submitButton.text"></button>
+    </form>
+
+    <script type="module" src="options.js"></script>
+    <script src="i18n.js"></script>
+  </body>
+</html>
