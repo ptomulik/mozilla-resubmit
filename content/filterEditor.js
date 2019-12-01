@@ -25,10 +25,13 @@
         let wrapper = customElements.get("ruleactiontarget-wrapper");
         log("debug: patchRuleactiontargetWrapper(): customElements.get('ruleactiontarget-wrapper') returned: " + wrapper, 7);
         if (wrapper) {
-            log("debug: patchRuleactiontargetWrapper(): wrapper.prototype.patchedByResubmitExtension=" + wrapper.prototype.patchedByResubmitExtension, 6);
-            if (wrapper.prototype.patchedByResubmitExtension) {
+            let alreadyPatched = wrapper.prototype.hasOwnProperty("_patchedByResubmitExtension") ?
+                                 wrapper.prototype._patchedByResubmitExtension :
+                                 false;
+            log("debug: patchRuleactiontargetWrapper(): alreadyPatched: " + alreadyPatched, 6);
+            if (alreadyPatched) {
                 // already patched
-                log("debug: patchRuleactiontargetWrapper(): wrapper.prototype already patched", 6);
+                log("debug: patchRuleactiontargetWrapper(): wrapper.prototype already patched, returning", 6);
                 return;
             }
             let prevMethod = wrapper.prototype._getChildNode;
@@ -38,7 +41,7 @@
                     let element = getChildNode(type);
                     return element ? element : prevMethod(type);
                 };
-                wrapper.prototype.patchedByResubmitExtension = true;
+                wrapper.prototype._patchedByResubmitExtension = true;
             }
         }
     }
