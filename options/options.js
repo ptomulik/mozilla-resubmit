@@ -1,4 +1,4 @@
-import { getOptions, getStoredOptions, applyDefaults } from "./functions.mjs";
+import { getOptions, getStoredOptions, applyDefaults } from "../lib/options.mjs";
 
 const inputSendNowEnabled = document.querySelector("#inputSendNowEnabled");
 const inputSendNowMaxMessages = document.querySelector("#inputSendNowMaxMessages");
@@ -12,12 +12,14 @@ const inputComposeMaxWindows = document.querySelector("#inputComposeMaxWindows")
 const inputDebugEnabled = document.querySelector("#inputDebugEnabled");
 const inputDebugLevel = document.querySelector("#inputDebugLevel");
 
+// Store options from form inputs into local storage.
 function storeOptions(e) {
     "use strict";
     browser.storage.local.set(parseFormInputs());
     e.preventDefault();
 }
 
+// Restore options from into form inputs.
 function restoreOptions() {
     "use strict";
     getOptions().then((res) => {
@@ -61,7 +63,6 @@ function parseFormInputs() {
         }
     };
 }
-
 
 document.addEventListener('DOMContentLoaded', restoreOptions);
 document.querySelector("#options-form").addEventListener("submit", storeOptions);

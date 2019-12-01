@@ -1,0 +1,15 @@
+{
+  "source": {
+    "include": ["."],
+    "exclude": [".gitignore", ".git"],
+    "includePattern": ".+\\.m?js(doc|x)?$"
+  },
+  "opts": {
+    "encoding": "utf8",
+    "recurse": true,
+    "destination": "./build/docs/"
+  },
+  "plugins": [
+    "plugins/markdown"
+  ]
+}

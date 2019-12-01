@@ -1,0 +1,5 @@
+#! /bin/sh
+
+HERE=`dirname "$0"`;
+
+(cd "$HERE" && jsdoc -c jsdoc/conf.json)
