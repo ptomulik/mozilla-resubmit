@@ -3,7 +3,7 @@
   "name": "Resubmit",
   "author": "Paweł Tomulik",
   "description": "Re-submit messages received from users to a predefined recipient(s).",
-  "version": "2.0.0a3",
+  "version": "2.0.0a4",
 
   "applications": {
     "gecko": {
