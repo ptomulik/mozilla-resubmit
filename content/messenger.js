@@ -241,7 +241,7 @@ function Resubmit() {
         // aFields.priority = ???;
         // aFields.messageId = ???;
         // aFields.characterSet = ???;
-        aFields.characterSet = 'UTF-8';
+        aFields.characterSet = 'utf-8';
 
         // aFields.templateName = ???;aTplHdr.folder.generateMessageURI(aTplHdr.messageKey);
         // aFields.draftId = ???;
@@ -263,6 +263,7 @@ function Resubmit() {
         // aFields.listReply = ???;
 
         aFields.body = aTplMsg.coerceBodyToPlaintext(aTplHdr.folder);
+        log("debug: initMsgCompFields(): aFields.body='''\n" + aFields.body + "\n'''", 6);
 
         return aFields;
     }
@@ -279,8 +280,9 @@ function Resubmit() {
 
         aParams.composeFields    = Cc["@mozilla.org/messengercompose/composefields;1"]
                                     .createInstance(Ci.nsIMsgCompFields);
-        aParams.type             = Ci.nsIMsgCompType.New;
-        aParams.format           = Ci.nsIMsgCompFormat.Default;
+        aParams.type             = Ci.nsIMsgCompType.Template;
+        //aParams.format           = Ci.nsIMsgCompFormat.Default;
+        aParams.format           = Ci.nsIMsgCompFormat.PlainText;
         aParams.originalMsgURI   = aTplHdr.folder.generateMessageURI(aTplHdr.messageKey);
         aParams.identity         = identity;
         aParams.origMsgHdr       = aTplHdr;
